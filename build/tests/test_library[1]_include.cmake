@@ -1,0 +1,5 @@
+if(EXISTS "/Users/salomeshioshvili/connect-four/build/tests/test_library[1]_tests.cmake")
+  include("/Users/salomeshioshvili/connect-four/build/tests/test_library[1]_tests.cmake")
+else()
+  add_test(test_library_NOT_BUILT test_library_NOT_BUILT)
+endif()

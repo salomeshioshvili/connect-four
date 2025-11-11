@@ -1,0 +1,9 @@
+name : connect-four
+channels:
+  - conda-forge
+dependencies:
+  - cmake
+  - make
+  - c-compiler
+  - cxx-compiler
+  - sdl2

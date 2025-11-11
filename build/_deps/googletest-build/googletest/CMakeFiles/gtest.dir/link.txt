@@ -1,0 +1,2 @@
+/Users/salomeshioshvili/miniforge3/envs/connect-four/bin/arm64-apple-darwin20.0.0-ar qc ../../../lib/libgtest.a "CMakeFiles/gtest.dir/src/gtest-all.cc.o"
+/Users/salomeshioshvili/miniforge3/envs/connect-four/bin/llvm-ranlib ../../../lib/libgtest.a
