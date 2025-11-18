@@ -1,4 +1,4 @@
-cdname : connect-four
+name : connectfour
 channels:
   - conda-forge
 dependencies:
