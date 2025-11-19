@@ -1,2 +1,0 @@
-/Users/salomeshioshvili/miniforge3/envs/connect-four/bin/arm64-apple-darwin20.0.0-ar qc ../../../lib/libgmock_main.a CMakeFiles/gmock_main.dir/src/gmock_main.cc.o
-/Users/salomeshioshvili/miniforge3/envs/connect-four/bin/llvm-ranlib ../../../lib/libgmock_main.a

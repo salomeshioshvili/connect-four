@@ -1,2 +1,0 @@
-/Users/salomeshioshvili/miniforge3/envs/connect-four/bin/arm64-apple-darwin20.0.0-ar qc liblibrary.a CMakeFiles/library.dir/library.c.o
-/Users/salomeshioshvili/miniforge3/envs/connect-four/bin/llvm-ranlib liblibrary.a
