@@ -1,6 +1,7 @@
 #include "game.h"
 #include "ai.h"
-
+#include "board.h"
+#include "history.h"
 #include <stdio.h>
 #include <ctype.h>
 
@@ -68,7 +69,7 @@ static int prompt_human_move(int allow_undo) {
 
 //GAME
 
-void game_init(Game *game, GameMode mode, CellState starting_player, CellState ai_player) {
+void game_init(Game *game, GameMode mode, CellState starting_player, CellState ai_player, AILevel ai_level) {
     if (!game) return;
 
     board_init(&game->board);
@@ -76,6 +77,7 @@ void game_init(Game *game, GameMode mode, CellState starting_player, CellState a
     game->current_player = starting_player;
     game->mode = mode;
     game->ai_player = (mode == GAME_MODE_PVAI) ? ai_player : EMPTY;
+    game->ai_level = (mode == GAME_MODE_PVAI) ? ai_level : AI_EASY;
     game->history = NULL;
     game->is_over = 0;
     game->winner = EMPTY;
@@ -101,7 +103,17 @@ static void switch_player(Game *game) {
  * Returns 1 on success, 0 if something went badly wrong (should not happen, but just in case).
  */
 static int do_ai_move(Game *game) {
-    int col = ai_choose_move(&game->board, game->current_player);
+    int col;
+
+    if (game->ai_level == AI_EASY) {
+        col = ai_easy(&game->board, game->current_player);
+    } else if (game->ai_level == AI_MEDIUM) {
+        col = ai_medium(&game->board, game->current_player);
+    } else if (game->ai_level == AI_HARD) {
+        col = ai_hard(&game->board, game->current_player);
+    } else {
+        col = ai_expert(&game->board, game->current_player);
+    }
 
     if (col < 0 || col >= COLS) {
         fprintf(stderr, "AI chose invalid column %d.\n", col);

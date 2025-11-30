@@ -2,8 +2,7 @@
 #define AI_H
 #include "board.h"
 #include <stdlib.h>
-#include "game.h"
-// #include <pthread.h> // For future threading implementation
+#include <pthread.h>
 
 typedef enum {
     AI_EASY,

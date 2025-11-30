@@ -3,6 +3,7 @@
 
 #include "board.h"
 #include "history.h"
+#include "ai.h"
 
 typedef enum {
     GAME_MODE_PVP,   // Player vs Player
@@ -14,6 +15,7 @@ typedef struct {
     CellState current_player;  // PLAYER1 or PLAYER2
     GameMode mode;
     CellState ai_player;       // which player is controlled by AI in PVAI (PLAYER1/PLAYER2), EMPTY if none
+    AILevel ai_level;          
     Move *history;             // linked list of moves
     int is_over;               // 0 = running, 1 = finished
     CellState winner;          // EMPTY if none
@@ -27,7 +29,7 @@ typedef struct {
  * @param starting_player PLAYER1 or PLAYER2
  * @param ai_player Which player is AI in PVAI mode (PLAYER1/PLAYER2). Ignored for PVP.
  */
-void game_init(Game *game, GameMode mode, CellState starting_player, CellState ai_player);
+void game_init(Game *game, GameMode mode, CellState starting_player, CellState ai_player, AILevel ai_level);
 
 /**
  * @brief Run the main game loop (blocking). Handles:
