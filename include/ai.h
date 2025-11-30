@@ -43,7 +43,7 @@ int ai_medium(const Board *board, CellState ai_player);
 int score_position(const Board *board, int player_id);
 
 /**
- * @brief Hard level AI: Uses minimax algorithm, thinks multiple moves ahead.
+ * @brief Hard level AI: Uses minimax algorithm, thinks one move ahead.
  * @return Column index (0-based)
  */
 int ai_hard(const Board *board, CellState ai_player);
