@@ -1,8 +1,5 @@
 #include "ai.h"
-#include <stdio.h>
-#include <time.h>
 #include "board.h"
-#include "game.h"
 #include <stdlib.h>
 
 int ai_easy(const Board *board, CellState ai_player) {
@@ -159,6 +156,21 @@ static int evaluate_board(const Board *board, CellState ai_player) {
 
     return ai_score - opponent_score;
 }
+// counts how many immediate winning moves are available for a player, this will be used for the expert ai
+static int count_immediate_wins(const Board *board, CellState player) {
+    int wins = 0;
+
+    for (int column = 0; column < COLS; column++) {
+        if (board_is_valid_move(board, column) == 1) {
+            Board temporary_board = *board;
+            board_drop_piece(&temporary_board, column, player);
+            if (board_check_winner(&temporary_board, player) == 1) {
+                wins = wins + 1;
+            }
+        }
+    }
+    return wins;
+}
 // the hard ai is going to implement the minimax algorithm that thinks multiple moves ahead
 // for reference, its a minimum risk maximum reward algorithm
 // bit more advanced but can (possibly?) still be beat 
@@ -200,7 +212,7 @@ int ai_expert(const Board *board, CellState ai_player) {
     } else {
         opponent = PLAYER1;
     }
-
+// added the same code that was in medium, if the ai can win immediately, win. if the opponent can win immediately, block.
     for (int column = 0; column < COLS; column++) {
         if (board_is_valid_move(board, column) == 1) {
             Board temporary_board = *board;
@@ -220,6 +232,18 @@ int ai_expert(const Board *board, CellState ai_player) {
             }
         }
     }
+    // minimax! evaluating all the potential worst case scenarios and choosing the best worst case
+    // also it checks for immediate winning traps using the function made earlier 
+    for (int column = 0; column < COLS; column++) {
+        if (board_is_valid_move(board, column) == 1) {
+            Board temporary_board = *board;
+            board_drop_piece(&temporary_board, column, ai_player);
+            int ai_future_wins = count_immediate_wins(&temporary_board, ai_player);
+            if (ai_future_wins >= 2) {
+                return column;
+            }
+        }
+    }
 
     for (int column = 0; column < COLS; column++) {
         if (board_is_valid_move(board, column) == 1) {
@@ -229,11 +253,16 @@ int ai_expert(const Board *board, CellState ai_player) {
             int worst_score_for_ai = 0;
             int worst_score_set = 0;
             
-            for (int opp_column = 0; opp_column < COLS; opp_column++) {
-                if (board_is_valid_move(&temporary_board, opp_column) == 1) {
-                    Board opp_board = temporary_board;
-                    board_drop_piece(&opp_board, opp_column, opponent);
-                    int position_score = evaluate_board(&opp_board, ai_player);
+            for (int opponent_column = 0; opponent_column < COLS; opponent_column++) {
+                if (board_is_valid_move(&temporary_board, opponent_column) == 1) {
+                    Board opponent_board = temporary_board;
+                    board_drop_piece(&opponent_board, opponent_column, opponent);
+                    int position_score = evaluate_board(&opponent_board, ai_player);
+// check for opponent traps
+                    int opponent_future_wins = count_immediate_wins(&opponent_board, opponent);
+                    if (opponent_future_wins >= 2) {
+                        position_score = position_score - 100000; // dramatic penalty for allowing the opponent to trap the ai
+                    }
 
                     if (worst_score_set == 0 || position_score < worst_score_for_ai) {
                         worst_score_for_ai = position_score;
