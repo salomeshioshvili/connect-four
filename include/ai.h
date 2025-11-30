@@ -11,6 +11,13 @@ typedef enum {
     AI_EXPERT
 } AILevel;
 
+typedef struct {
+    Board board_copy;
+    CellState ai_player;
+    AILevel ai_level;
+    int result;
+} AIThread;
+
 /**
  * @brief Choose the best move for the AI player based on difficulty level
  * @return Column index (0-based) where the AI chooses to drop its piece
@@ -46,17 +53,9 @@ int ai_hard(const Board *board, CellState ai_player);
  * @return Column index (0-based)
  */
 int ai_expert(const Board *board, CellState ai_player);
+/**
+ * @brief The famous thread function that runs all the AI computations in parallel
+ */
+void* ai_thread_function(void* arg);
 
 #endif // AI_H 
-
-// Implementing threading: 
-// I want to implement threading in the ai_hard and ai_expert functions to allow the AI to think ahead without blocking the main game loop. This will improve the user experience by keeping the game responsive while the AI is calculating its move.
-// I don't want to break the project though, so I want to make sure that the logic works without threading first, and then I can add threading later to make sure I did not break anything. 
-// To implement threading, I will use the pthread library to create a separate thread for the AI's move calculation. This thread will run the minimax algorithm or other complex logic without interfering with the main game loop.
-// typedef struct {
-//     Board board_copy;
-//     CellState ai_player;
-//     AILevel ai_level;
-//     int result;
-// } AIThread;
-// void* ai_thread_function(void* arg);

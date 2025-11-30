@@ -4,6 +4,7 @@
 #include "history.h"
 #include <stdio.h>
 #include <ctype.h>
+#include <pthread.h>
 
 //clear the screen, should work, but if odesn't I'll try to do something else, chat gave this to me
 static void clear_screen(void) {
@@ -109,10 +110,22 @@ static int do_ai_move(Game *game) {
         col = ai_easy(&game->board, game->current_player);
     } else if (game->ai_level == AI_MEDIUM) {
         col = ai_medium(&game->board, game->current_player);
-    } else if (game->ai_level == AI_HARD) {
-        col = ai_hard(&game->board, game->current_player);
     } else {
-        col = ai_expert(&game->board, game->current_player);
+        AIThread task;
+        pthread_t thread;
+
+        task.board_copy = game->board;
+        task.ai_player = game->current_player;
+        task.ai_level = game->ai_level;
+        task.result = -1;
+
+        if (pthread_create(&thread, NULL, ai_thread_function, &task) != 0) {
+            fprintf(stderr, "Failed to create the AI thread. Falling back to medium AI.\n");
+            col = ai_medium(&game->board, game->current_player);
+        } else {
+            pthread_join(thread, NULL);
+            col = task.result;
+        }
     }
 
     if (col < 0 || col >= COLS) {

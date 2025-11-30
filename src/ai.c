@@ -141,21 +141,41 @@ int score_position(const Board *board, int player_id) {
 
     return score;
 }
-// the hard ai is going to implement a minimax algorithm that thinks multiple moves ahead
+// this is whats going to be used for the minimax algorithm
+// first evalutate the board's current state and give it a score
+static int evaluate_board(const Board *board, CellState ai_player) {
+    CellState opponent;
+    int ai_score;
+    int opponent_score;
+
+    if (ai_player == PLAYER1) {
+        opponent = PLAYER2;
+    } else {
+        opponent = PLAYER1;
+    }
+
+    ai_score = score_position(board, ai_player);
+    opponent_score = score_position(board, opponent);
+
+    return ai_score - opponent_score;
+}
+// the hard ai is going to implement the minimax algorithm that thinks multiple moves ahead
 // for reference, its a minimum risk maximum reward algorithm
 // bit more advanced but can (possibly?) still be beat 
 int ai_hard(const Board *board, CellState ai_player) {
     int best_column = -1;
     int best_score = 0;
+    int best_score_set = 0;
 
     for (int column = 0; column < COLS; column++) {
         if (board_is_valid_move(board, column) == 1) {
             Board temporary_board = *board;
             board_drop_piece(&temporary_board, column, ai_player);
-            int current_score = score_position(&temporary_board, ai_player);
+            int current_score = evaluate_board(&temporary_board, ai_player);
 
-            if (best_column == -1 || current_score > best_score) {
+            if (best_score_set == 0 || current_score > best_score) {
                 best_score = current_score;
+                best_score_set = 1;
                 best_column = column;
             }
         }
@@ -170,7 +190,67 @@ int ai_hard(const Board *board, CellState ai_player) {
 // the fun one, it has strategy, it never loses, it forces a draw if it cant win
 // it uses traps, thinks ahead, always blocks attacks, keeps track of the player's pieces and predicts their next move to use it as an advantage, etc.
 int ai_expert(const Board *board, CellState ai_player) {
-    return ai_hard(board, ai_player);
+    CellState opponent;
+    int best_column = -1;
+    int best_score = 0;
+    int best_score_set = 0;
+
+    if (ai_player == PLAYER1) {
+        opponent = PLAYER2;
+    } else {
+        opponent = PLAYER1;
+    }
+
+    for (int column = 0; column < COLS; column++) {
+        if (board_is_valid_move(board, column) == 1) {
+            Board temp_board = *board;
+            board_drop_piece(&temp_board, column, ai_player);
+
+            int worst_score_for_ai = 0;
+            int worst_score_set = 0;
+
+            for (int opp_column = 0; opp_column < COLS; opp_column++) {
+                if (board_is_valid_move(&temp_board, opp_column) == 1) {
+                    Board opp_board = temp_board;
+                    board_drop_piece(&opp_board, opp_column, opponent);
+                    int position_score = evaluate_board(&opp_board, ai_player);
+
+                    if (worst_score_set == 0 || position_score < worst_score_for_ai) {
+                        worst_score_for_ai = position_score;
+                        worst_score_set = 1;
+                    }
+                }
+            }
+
+            if (worst_score_set == 0) {
+                worst_score_for_ai = evaluate_board(&temp_board, ai_player);
+            }
+
+            if (best_score_set == 0 || worst_score_for_ai > best_score) {
+                best_score = worst_score_for_ai;
+                best_score_set = 1;
+                best_column = column;
+            }
+        }
+    }
+
+    if (best_column == -1) {
+        return ai_medium(board, ai_player);
+    }
+
+    return best_column;
+}
+
+void *ai_thread_function(void *arg) {
+    AIThread *task = (AIThread *)arg;
+
+    if (task->ai_level == AI_HARD) {
+        task->result = ai_hard(&task->board_copy, task->ai_player);
+    } else {
+        task->result = ai_expert(&task->board_copy, task->ai_player);
+    }
+
+    return NULL;
 }
 
 int ai_choose_move(const Board *board, CellState ai_player) {
