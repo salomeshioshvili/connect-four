@@ -203,15 +203,35 @@ int ai_expert(const Board *board, CellState ai_player) {
 
     for (int column = 0; column < COLS; column++) {
         if (board_is_valid_move(board, column) == 1) {
-            Board temp_board = *board;
-            board_drop_piece(&temp_board, column, ai_player);
+            Board temporary_board = *board;
+            board_drop_piece(&temporary_board, column, ai_player);
+            if (board_check_winner(&temporary_board, ai_player) == 1) {
+                return column;
+            }
+        }
+    }
+
+    for (int column = 0; column < COLS; column++) {
+        if (board_is_valid_move(board, column) == 1) {
+            Board temporary_board = *board;
+            board_drop_piece(&temporary_board, column, opponent);
+            if (board_check_winner(&temporary_board, opponent) == 1) {
+                return column;
+            }
+        }
+    }
+
+    for (int column = 0; column < COLS; column++) {
+        if (board_is_valid_move(board, column) == 1) {
+            Board temporary_board = *board;
+            board_drop_piece(&temporary_board, column, ai_player);
 
             int worst_score_for_ai = 0;
             int worst_score_set = 0;
-
+            
             for (int opp_column = 0; opp_column < COLS; opp_column++) {
-                if (board_is_valid_move(&temp_board, opp_column) == 1) {
-                    Board opp_board = temp_board;
+                if (board_is_valid_move(&temporary_board, opp_column) == 1) {
+                    Board opp_board = temporary_board;
                     board_drop_piece(&opp_board, opp_column, opponent);
                     int position_score = evaluate_board(&opp_board, ai_player);
 
@@ -223,7 +243,7 @@ int ai_expert(const Board *board, CellState ai_player) {
             }
 
             if (worst_score_set == 0) {
-                worst_score_for_ai = evaluate_board(&temp_board, ai_player);
+                worst_score_for_ai = evaluate_board(&temporary_board, ai_player);
             }
 
             if (best_score_set == 0 || worst_score_for_ai > best_score) {
