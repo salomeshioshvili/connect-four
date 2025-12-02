@@ -6,20 +6,20 @@
 #include "ai.h"
 
 typedef enum {
-    GAME_MODE_PVP,   // Player vs Player
-    GAME_MODE_PVAI   // Player vs AI
+    GAME_MODE_PVP, 
+    GAME_MODE_PVAI
 } GameMode;
 
 typedef struct {
     Board board;
-    CellState current_player;  // PLAYER1 or PLAYER2
+    CellState current_player;
     GameMode mode;
-    CellState ai_player;       // which player is controlled by AI in PVAI (PLAYER1/PLAYER2), EMPTY if none
+    CellState ai_player; 
     AILevel ai_level;          
-    Move *history;             // linked list of moves
-    int is_over;               // 0 = running, 1 = finished
-    CellState winner;          // EMPTY if none
-    int is_draw;               // 1 if draw, 0 otherwise
+    Move *history;  
+    int is_over;
+    CellState winner;
+    int is_draw;  
 } Game;
 
 /**

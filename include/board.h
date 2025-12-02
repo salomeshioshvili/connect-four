@@ -54,4 +54,4 @@ int board_check_winner(const Board *board, CellState player);
  */
 int board_check_draw(const Board *board);
 
-#endif // BOARD_H
+#endif

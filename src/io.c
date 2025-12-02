@@ -194,7 +194,7 @@ int prompt_human_move(int allow_undo) {
             return -1;
         }
 
-        char *p = buffer;//give p the fgets thing from the if
+        char *p = buffer;
         while (*p && isspace((unsigned char)*p)) {
             p++;
         }
