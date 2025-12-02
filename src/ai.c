@@ -4,7 +4,7 @@
 
 int ai_easy(const Board *board, CellState ai_player) {
     int column;
-// i decided that the easy ai only plays random valid moves it doesnt do anything else
+// the easy ai only plays random valid moves it doesnt do anything else
     do {
         column = rand() % COLS;
     } while (board_is_valid_move(board, column) == 0);

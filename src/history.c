@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include "history.h"
+#include <stdio.h>
+
 
 /* allocate and initialize a new move node. */
 static Move *create_move_node(int row, int col, CellState player)
@@ -121,4 +123,46 @@ void history_free(Move **head)
     }
 
     *head = NULL;
+}
+
+void history_print(const Move *head, const char *filename) {
+    const Move *current = head;
+    FILE *file;
+    int move_number = 1;
+
+    file = fopen(filename, "w");
+    if (file == NULL) {
+        return 0;
+    }
+
+    if (current == NULL) {
+        fprintf(file, "No moves were played.\n");
+        fclose(file);
+        return 1;
+    }
+
+    while (current != NULL) {
+        const char *player_name;
+
+        if (current->player == PLAYER1) {
+            player_name = "Player 1 (X)";
+        } else if (current->player == PLAYER2) {
+            player_name = "Player 2 (O)";
+        } else {
+            player_name = "Unknown";
+        }
+
+        fprintf(file,
+                "Move %d: %s -> column %d, row %d\n",
+                move_number,
+                player_name,
+                current->col,
+                current->row);
+
+        move_number = move_number + 1;
+        current = current->next;
+    }
+
+    fclose(file);
+    return 1;
 }
