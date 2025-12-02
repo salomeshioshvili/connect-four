@@ -105,16 +105,28 @@ static int do_human_move(Game *game, int allow_undo) {
             game->is_over = 1;
             return 0;
         } else if (res == -2 && allow_undo) {
-            // undo last move
-            CellState dummy_player;  // we ignore this; we keep game->current_player as-is
-            if (!history_undo(&game->board, &game->history, &dummy_player)) {
-                printf("No moves to undo.\n");
+            // Undo both AI's move and player's last move
+            CellState undone_player;
+            int count = 0;
+            
+            // Undo AI's last move
+            if (history_undo(&game->board, &game->history, &undone_player)) {
+                count++;
+            }
+            // Undo player's last move
+            if (history_undo(&game->board, &game->history, &undone_player)) {
+                count++;
+                game->current_player = undone_player;
+            }
+            
+            if (count > 0) {
+                printf("%d move(s) undone.\n", count);
             } else {
-                printf("Last move undone.\n");
+                printf("No moves to undo.\n");
             }
             clear_screen();
             board_print(&game->board);
-            continue; // still same player's turn, no new piece placed yet
+            continue;
         } else {
             int col = res;
 

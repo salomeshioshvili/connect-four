@@ -121,9 +121,17 @@ void run_graphics_game(GameMode mode, CellState ai_player, AILevel ai_level) {
                 }
                 
                 if (undo && game.mode == GAME_MODE_PVAI) {
-                    CellState dummy;
-                    history_undo(&game.board, &game.history, &dummy);
-                    history_undo(&game.board, &game.history, &dummy);
+                    // Undo AI's move and player's last move
+                    CellState undone_player;
+                    int ok1 = history_undo(&game.board, &game.history, &undone_player);
+                    int ok2 = history_undo(&game.board, &game.history, &undone_player);
+                    if (ok2) {
+                        // Successfully undid player's move, set current player back
+                        game.current_player = undone_player;
+                    } else if (ok1) {
+                        // Only undid one move (AI's), set current player
+                        game.current_player = undone_player;
+                    }
                     continue;
                 }
                 

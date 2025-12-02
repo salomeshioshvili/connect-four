@@ -1,5 +1,3 @@
-# tests/CMakeLists.txt
-
 add_executable(board_tests
     test_board.c
     test_ai.c
