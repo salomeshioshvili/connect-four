@@ -175,6 +175,35 @@ static int count_immediate_wins(const Board *board, CellState player) {
 // for reference, its a minimum risk maximum reward algorithm
 // bit more advanced but can (possibly?) still be beat 
 int ai_hard(const Board *board, CellState ai_player) {
+        CellState opponent;
+    if (ai_player == PLAYER1) {
+        opponent = PLAYER2;
+    } else {
+        opponent = PLAYER1;
+    }
+
+    // 1) Try to win immediately
+    for (int column = 0; column < COLS; column++) {
+        if (board_is_valid_move(board, column) == 1) {
+            Board temp_board = *board;
+            board_drop_piece(&temp_board, column, ai_player);
+            if (board_check_winner(&temp_board, ai_player) == 1) {
+                return column;
+            }
+        }
+    }
+
+    // 2) Try to block opponent's immediate win
+    for (int column = 0; column < COLS; column++) {
+        if (board_is_valid_move(board, column) == 1) {
+            Board temp_board = *board;
+            board_drop_piece(&temp_board, column, opponent);
+            if (board_check_winner(&temp_board, opponent) == 1) {
+                return column;
+            }
+        }
+    }
+
     int best_column = -1;
     int best_score = 0;
     int best_score_set = 0;
@@ -194,7 +223,7 @@ int ai_hard(const Board *board, CellState ai_player) {
     }
 
     if (best_column == -1) {
-        return ai_easy(board, ai_player);
+        return ai_medium(board, ai_player);
     }
 
     return best_column;
