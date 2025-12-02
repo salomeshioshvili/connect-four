@@ -2,73 +2,10 @@
 #include "ai.h"
 #include "board.h"
 #include "history.h"
+#include "io.c"
 #include <stdio.h>
 #include <ctype.h>
 #include <pthread.h>
-
-//clear the screen, should work, but if odesn't I'll try to do something else, chat gave this to me
-static void clear_screen(void) {
-    printf("\033[2J\033[H");
-}
-
-static const char *player_name(CellState p) {
-    switch (p) {
-        case PLAYER1: return "Player 1 (X)";
-        case PLAYER2: return "Player 2 (O)";
-        default:      return "Unknown";
-    }
-}
-
-/**
- * Prompt a player for a move:
- *  - enter column 0..COLS-1
- *  - 'q' to quit
- *  - 'u' to undo (only if playing against ai)
- *
- * Returns:
- *   0..COLS-1 -> chosen column
- *   -1        -> quit
- *   -2        -> undo
- */
-static int prompt_human_move(int allow_undo) {
-    char buffer[64];
-
-    while (1) {
-        if (allow_undo) {
-            printf("Enter column (0-%d), 'u' to undo, or 'q' to quit: ", COLS - 1);
-        } else {
-            printf("Enter column (0-%d), or 'q' to quit: ", COLS - 1);
-        }
-
-        if (!fgets(buffer, sizeof(buffer), stdin)) {
-            // EOF -> treat as quit can also implement errno here to make raul happy
-            return -1;
-        }
-
-        char *p = buffer;//give p the fgets thing from the if
-        while (*p && isspace((unsigned char)*p)) {
-            p++;
-        }
-        //check the actual input
-        if (*p == 'q' || *p == 'Q') {
-            return -1;
-        }
-        if (allow_undo && (*p == 'u' || *p == 'U')) {
-            return -2;
-        }
-
-        int col;
-        if (sscanf(p, "%d", &col) == 1) {
-            if (col >= 0 && col < COLS) {
-                return col;
-            }
-        }
-
-        printf("Invalid input. Please try again.\n");
-    }
-}
-
-//GAME
 
 void game_init(Game *game, GameMode mode, CellState starting_player, CellState ai_player, AILevel ai_level) {
     if (!game) return;

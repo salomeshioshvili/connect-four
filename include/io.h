@@ -15,4 +15,4 @@ int get_menu_choice(int min, int max);
 void run_graphics_game(GameMode mode, CellState ai_player, AILevel ai_level);
 #endif
 
-#endif // IO_H
+#endif
