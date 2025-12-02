@@ -187,5 +187,6 @@ void game_run(Game *game) {
     } else {
         printf("Game ended.\n");
     }
+    history_print(game->history, "game_history.txt");
     printf("\n");
 }
