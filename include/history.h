@@ -25,6 +25,6 @@ void history_replay(const Move *head, Board *board);
 void history_free(Move **head);
 
 /* print all the moves in the list*/
-void history_print(const Move *head, const char *filename);
+int history_print(const Move *head, const char *filename);
 
 #endif

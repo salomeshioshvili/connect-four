@@ -125,7 +125,7 @@ void history_free(Move **head)
     *head = NULL;
 }
 
-void history_print(const Move *head, const char *filename) {
+int history_print(const Move *head, const char *filename) {
     const Move *current = head;
     FILE *file;
     int move_number = 1;
