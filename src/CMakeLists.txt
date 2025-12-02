@@ -4,7 +4,6 @@ add_library(connect4_library
     board.c
     game.c
     ai.c
-    utils.c
     history.c
     io.c
 )
