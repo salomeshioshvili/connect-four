@@ -243,11 +243,15 @@ void game_run(Game *game) {
     clear_screen();
     board_print(&game->board);
 
-    if (game->winner == PLAYER1 || game->winner == PLAYER2) {
-        printf("%s wins!\n", player_name(game->winner));
+    printf("\n");
+    if (game->winner == PLAYER1) {
+        printf("*** PLAYER 1 (X) WINS! ***\n");
+    } else if (game->winner == PLAYER2) {
+        printf("*** PLAYER 2 (O) WINS! ***\n");
     } else if (game->is_draw) {
-        printf("It's a draw! Board is full, no winner.\n");
+        printf("*** IT'S A DRAW! ***\n");
     } else {
-        printf("Game ended without a winner.\n");
+        printf("Game ended.\n");
     }
+    printf("\n");
 }
