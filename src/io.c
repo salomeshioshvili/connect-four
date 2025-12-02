@@ -1,4 +1,5 @@
 #include "io.h"
+#include "game.h"
 #include <stdio.h>
 #include <ctype.h>
 
@@ -158,11 +159,11 @@ void run_graphics_game(GameMode mode, CellState ai_player, AILevel ai_level) {
 }
 #endif
 
-static void clear_screen(void) {
+void clear_screen(void) {
     printf("\033[2J\033[H");
 }
 
-static const char *player_name(CellState p) {
+const char *player_name(CellState p) {
     switch (p) {
         case PLAYER1: return "Player 1 (X)";
         case PLAYER2: return "Player 2 (O)";
@@ -170,7 +171,7 @@ static const char *player_name(CellState p) {
     }
 }
 
-static int prompt_human_move(int allow_undo) {
+int prompt_human_move(int allow_undo) {
     char buffer[64];
 
     while (1) {

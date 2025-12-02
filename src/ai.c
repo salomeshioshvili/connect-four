@@ -4,7 +4,7 @@
 
 int ai_easy(const Board *board, CellState ai_player) {
     int column;
-// i decided that the easy ai only plays random valid moves it doesnt do anythingg else
+// i decided that the easy ai only plays random valid moves it doesnt do anything else
     do {
         column = rand() % COLS;
     } while (board_is_valid_move(board, column) == 0);
@@ -302,6 +302,3 @@ void *ai_thread_function(void *arg) {
     return NULL;
 }
 
-int ai_choose_move(const Board *board, CellState ai_player) {
-    return ai_medium(board, ai_player);
-}

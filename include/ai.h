@@ -19,12 +19,6 @@ typedef struct {
 } AIThread;
 
 /**
- * @brief Choose the best move for the AI player based on difficulty level
- * @return Column index (0-based) where the AI chooses to drop its piece
- */
-int ai_choose_move(const Board *board, CellState ai_player);
-
-/**
  * @brief Easy level AI: Chooses a random valid move, still smart, but does not have advanced strategies. It can lose, but it does the bare minimum (blocks and plays a valid move)
  * @return Column index (0-based)
  */

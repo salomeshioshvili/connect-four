@@ -2,7 +2,7 @@
 #include "ai.h"
 #include "board.h"
 #include "history.h"
-#include "io.c"
+#include "io.h"
 #include <stdio.h>
 #include <ctype.h>
 #include <pthread.h>

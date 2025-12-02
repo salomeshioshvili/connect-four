@@ -85,5 +85,4 @@ UTEST(board, diagonal_down_left_win) {
 	ASSERT_EQ(board_check_winner(&b, PLAYER2), 1);
 }
 
-// Provide test runner main
-UTEST_MAIN();
+
