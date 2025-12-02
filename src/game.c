@@ -36,10 +36,8 @@ static void switch_player(Game *game) {
     }
 }
 
-/**
- * Execute one AI move.
- * Returns 1 on success, 0 if something went badly wrong (should not happen, but just in case).
- */
+//Execute one AI move.
+//Returns 1 on success and 0 if a bug happened (should not happen, but just in case, for debugging purposes)
 static int do_ai_move(Game *game) {
     int col;
 
@@ -86,22 +84,12 @@ static int do_ai_move(Game *game) {
     return 1;
 }
 
-/**
- * Execute one player move:
- *  - ask for input
- *  - support quit always
- *  - support undo only if playing ai (can even romove feature if y'all don't like it)
- *
- * Returns:
- *   1 -> turn finished with a new piece
- *   0 -> player chose to quit
- */
+//does one player move, but keep in mind that if it plays against another person, i disabled undo so no one copmplains about "unfairness"
 static int do_human_move(Game *game, int allow_undo) {
     while (1) {
         int res = prompt_human_move(allow_undo);
 
         if (res == -1) {
-            // quit
             game->is_over = 1;
             return 0;
         } else if (res == -2 && allow_undo) {
@@ -142,7 +130,7 @@ static int do_human_move(Game *game, int allow_undo) {
             }
 
             history_add_move(&game->history, row, col, game->current_player);
-            return 1; // successful move
+            return 1;
         }
     }
 }
@@ -167,13 +155,11 @@ void game_run(Game *game) {
         }
 
         if (!move_ok) {
-            // someone quit or AI failure -> end with no winner
             game->winner = EMPTY;
             game->is_draw = 0;
             break;
         }
 
-        // After a successful move, check for winner or draw
         if (board_check_winner(&game->board, game->current_player)) {
             game->is_over = 1;
             game->winner = game->current_player;
@@ -183,7 +169,6 @@ void game_run(Game *game) {
             game->winner = EMPTY;
             game->is_draw = 1;
         } else {
-            //Keep playing, it's not over
             switch_player(game);
         }
     }

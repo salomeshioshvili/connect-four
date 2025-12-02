@@ -10,10 +10,9 @@ void board_init(Board *board) {
 int board_drop_piece(Board *board, int col, CellState player) {
     // Check if column number is valid (0-6)
     if (col < 0 || col >= COLS) {
-        return -1;  // Invalid column
+        return -1;
     }
-    
-    // Start from bottom row and go up, find first empty spot
+
     for (int row = ROWS - 1; row >= 0; row--) {
         if (board->cells[row][col] == EMPTY) {
             board->cells[row][col] = player;  
@@ -21,16 +20,15 @@ int board_drop_piece(Board *board, int col, CellState player) {
         }
     }
     
-    return -1;  // Column is full
+    return -1;
 }
 
 int board_is_valid_move(const Board *board, int col) {
     // Check column number is in range
     if (col < 0 || col >= COLS) {
-        return 0;  // Invalid
+        return 0;
     }
-    
-    // Check if top row of this column is empty
+
     return board->cells[0][col] == EMPTY;
 }
 
@@ -38,18 +36,17 @@ int board_is_full(const Board *board) {
     // Check each column's top row
     for (int col = 0; col < COLS; col++) {
         if (board->cells[0][col] == EMPTY) {
-            return 0;  // Found an empty spot
+            return 0;
         }
     }
-    return 1;  // All columns full
+    return 1; 
 }
 
 void board_print(const Board *board) {
     printf("\n");
-    printf(" 0 1 2 3 4 5 6\n");  // Column numbers
+    printf(" 0 1 2 3 4 5 6\n");
     printf(" =============\n");
-    
-    // Print each row
+
     for (int row = 0; row < ROWS; row++) {
         printf("|");
         for (int col = 0; col < COLS; col++) {
@@ -67,26 +64,26 @@ void board_print(const Board *board) {
 }
 
 int board_check_winner(const Board *board, CellState player) {
-    // Check horizontal (rows)
+    // Check rows
     for (int row = 0; row < ROWS; row++) {
         for (int col = 0; col <= COLS - 4; col++) {
             if (board->cells[row][col] == player &&
                 board->cells[row][col + 1] == player &&
                 board->cells[row][col + 2] == player &&
                 board->cells[row][col + 3] == player) {
-                return 1;  // Found 4 in a row
+                return 1;  // win
             }
         }
     }
     
-    // Check vertical (columns)
+    // Check cols
     for (int row = 0; row <= ROWS - 4; row++) {
         for (int col = 0; col < COLS; col++) {
             if (board->cells[row][col] == player &&
                 board->cells[row + 1][col] == player &&
                 board->cells[row + 2][col] == player &&
                 board->cells[row + 3][col] == player) {
-                return 1;  // Found 4 in a column
+                return 1; 
             }
         }
     }
@@ -98,7 +95,7 @@ int board_check_winner(const Board *board, CellState player) {
                 board->cells[row + 1][col + 1] == player &&
                 board->cells[row + 2][col + 2] == player &&
                 board->cells[row + 3][col + 3] == player) {
-                return 1;  // Found diagonal
+                return 1;
             }
         }
     }
@@ -110,27 +107,24 @@ int board_check_winner(const Board *board, CellState player) {
                 board->cells[row + 1][col - 1] == player &&
                 board->cells[row + 2][col - 2] == player &&
                 board->cells[row + 3][col - 3] == player) {
-                return 1;  // Found diagonal
+                return 1; 
             }
         }
     }
     
-    return 0;  // No winner yet
+    return 0;
 }
 
 int board_check_draw(const Board *board) {
-    // Check if board is full
     if (!board_is_full(board)) {
-        return 0;  // Not full, can't be a draw
+        return 0; 
     }
-    
-    // Check if either player won
     if (board_check_winner(board, PLAYER1)) {
-        return 0;  // Player 1 won, not a draw
+        return 0;
     }
     if (board_check_winner(board, PLAYER2)) {
-        return 0;  // Player 2 won, not a draw
+        return 0; 
     }
     
-    return 1;  // Board full with no winner = draw
+    return 1; 
 }

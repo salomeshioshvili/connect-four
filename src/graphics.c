@@ -147,7 +147,7 @@ void graphics_render(Graphics *gfx, const Board *board, CellState current_player
         }
     }
     
-    // Hover piece at top
+    // Hover piece at top (I love this feature)
     if (!game_over && gfx->selected_column >= 0 && gfx->selected_column < COLS) {
         int cx = BOARD_PADDING + gfx->selected_column * CELL_SIZE + CELL_SIZE / 2;
         int cy = BOARD_PADDING / 2 + 5;
