@@ -182,7 +182,7 @@ int ai_hard(const Board *board, CellState ai_player) {
         opponent = PLAYER1;
     }
 
-    // 1) Try to win immediately
+
     for (int column = 0; column < COLS; column++) {
         if (board_is_valid_move(board, column) == 1) {
             Board temp_board = *board;
@@ -193,7 +193,7 @@ int ai_hard(const Board *board, CellState ai_player) {
         }
     }
 
-    // 2) Try to block opponent's immediate win
+
     for (int column = 0; column < COLS; column++) {
         if (board_is_valid_move(board, column) == 1) {
             Board temp_board = *board;
@@ -241,7 +241,7 @@ int ai_expert(const Board *board, CellState ai_player) {
     } else {
         opponent = PLAYER1;
     }
-// added the same code that was in medium, if the ai can win immediately, win. if the opponent can win immediately, block.
+    
     for (int column = 0; column < COLS; column++) {
         if (board_is_valid_move(board, column) == 1) {
             Board temporary_board = *board;
